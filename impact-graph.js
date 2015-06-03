@@ -27,8 +27,6 @@ ImpactGraph.functions = {
             "year": parseInt(focus_publication.year)
         });
 
-        console.log(focus_publication);
-
         var keys = ["citations", "references"];
         for (var key in keys) {
 
@@ -60,8 +58,9 @@ ImpactGraph.functions = {
 
 ImpactGraph.render = {};
 
-ImpactGraph.load = function (publication_id, url, placement, width, height) {
+ImpactGraph.load = function (publication_id, url, placement, width, height, options) {
 
+    //todo: add options
 
     d3.json(url, function (data) {
         var publications = ImpactGraph.functions.process_data(publication_id, data);
@@ -93,9 +92,8 @@ ImpactGraph.load = function (publication_id, url, placement, width, height) {
             .style("stroke", function(d) {
                 return ImpactGraph.colors(d.type);
             })
-            .style("stroke-width", 2)
+            .style("stroke-width", 1)
             .attr("x1", function (d) {
-                console.log("adding line from " + x_scale(d.year) + " to " + x_scale(data[publication_id].year))
                 return x_scale(d.year);
             })
             .attr("y1", function (d) {
@@ -109,16 +107,13 @@ ImpactGraph.load = function (publication_id, url, placement, width, height) {
             })
             .style("opacity",1);
 
-        svg.selectAll("g.square").data(publications).enter().append("circle").attr("r", 3).attr("cx", function (d) {
-            console.log(x_scale(d.year));
+        svg.selectAll("g.square").data(publications).enter().append("circle").attr("r", 1).attr("cx", function (d) {
             return x_scale(d.year);
         }).attr("cy", function (d) {
             return d.citation_count == 0 ? y_scale(1) : y_scale(+d.citation_count);
         }).style("fill", function (d) {
             return ImpactGraph.colors(d.type);
         }).style("opacity", 1);
-
-
 
     })
 }
