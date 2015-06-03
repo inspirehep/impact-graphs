@@ -1,0 +1,25 @@
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+.axis {
+    fill: none;
+    stroke: #AAA;
+    stroke-width: 1px;
+}
+text {
+    stroke: none;
+    fill: #666666;
+    font-size: .6em;
+    font-family: 'Roboto', sans-serif;
+}
+.label {
+    fill: #414241;
+}
+.node {
+    cursor:pointer;
+}
+.dot {
+    opacity: .7;
+    cursor: pointer;
+}

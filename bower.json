@@ -1,0 +1,28 @@
+{
+  "name": "impact-graphs",
+  "version": "0.0.1",
+  "authors": [
+    "Eamonn Maguire <eamonnmag@gmail.com>"
+  ],
+  "description": "Publication impact graph renderer",
+  "main": "impact-graph.js",
+  "keywords": [
+    "visualization",
+    "d3",
+    "publications",
+    "inspire",
+    "cern"
+  ],
+  "license": "MIT",
+  "homepage": "http://www.cern.ch",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "d3": "latest"
+  }
+}
