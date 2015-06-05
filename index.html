@@ -3,33 +3,133 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>Impact graphs</title>
-    <link href='http://fonts.googleapis.com/css?family=Roboto:400,500' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,200' rel='stylesheet' type='text/css'>
     <link href="style.css" rel="stylesheet">
 </head>
 <body>
 
 <div class="container">
 
-    <div id="impact_graph_chart_1">
-    </div>
-
-    <div id="impact_graph_chart_2">
-    </div>
-
-    <div id="impact_graph_chart_3">
-    </div>
-
 </div>
 
 </body>
-
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
 <script src="assets/components/d3/d3.min.js" type="text/javascript"></script>
 <script src="impact-graph.js" type="text/javascript"></script>
 
 <script>
-    ImpactGraph.load('687657', 'data/687657.json', "#impact_graph_chart_1", 200, 200);
-    ImpactGraph.load('125663', 'data/125663.json', "#impact_graph_chart_2", 200, 200);
-    ImpactGraph.load('1236243', 'data/1236243.json', "#impact_graph_chart_3", 200, 200);
+    var files = ['106090',
+        '1082111',
+        '1100968',
+        '1106954',
+        '1116130',
+        '1121497',
+        '113617',
+        '1229082',
+        '1229751',
+        '1236243',
+        '1241708',
+        '1255660',
+        '125663',
+        '126308',
+        '1267198',
+        '1288707',
+        '1289190',
+        '130402',
+        '1306804',
+        '1314370',
+        '1319966',
+        '1333813',
+        '1339471',
+        '1341323',
+        '1364423',
+        '1373500',
+        '1374543',
+        '14741',
+        '151579',
+        '152831',
+        '158592',
+        '159608',
+        '176489',
+        '187482',
+        '195444',
+        '208073',
+        '221617',
+        '227038',
+        '230331',
+        '246822',
+        '247205',
+        '252257',
+        '258504',
+        '267794',
+        '271177',
+        '285269',
+        '290659',
+        '295533',
+        '29960',
+        '320566',
+        '32143',
+        '324904',
+        '355129',
+        '380060',
+        '380594',
+        '409305',
+        '421988',
+        '441161',
+        '443495',
+        '449996',
+        '451647',
+        '468545',
+        '470406',
+        '473224',
+        '47554',
+        '483493',
+        '485690',
+        '487551',
+        '488845',
+        '502452',
+        '554898',
+        '563829',
+        '565305',
+        '574744',
+        '576096',
+        '589527',
+        '593584',
+        '61078',
+        '639737',
+        '653482',
+        '660203',
+        '673748',
+        '687657',
+        '689454',
+        '714628',
+        '722943',
+        '735507',
+        '74197',
+        '744183',
+        '745363',
+        '766662',
+        '774771',
+        '785366',
+        '798169',
+        '814907',
+        '818157',
+        '824722',
+        '825922',
+        '838712',
+        '862835',
+        '870729',
+        '891956',
+        '913198',
+        '915591',
+        '923253'
+    ];
+
+
+    for (var file_idx in files) {
+        $(".container").append('<div id="impact_graph_chart_' + files[file_idx] + '"><a href="" target="_blank"></a></div>');
+        ImpactGraph.load(files[file_idx], 'data/' + files[file_idx] + '.json', "#impact_graph_chart_" + files[file_idx], 150, 150);
+    }
 
 
 </script>

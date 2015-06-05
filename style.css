@@ -23,3 +23,19 @@ text {
     opacity: .7;
     cursor: pointer;
 }
+
+.container div {
+    float:left;
+    width: 150px;
+    min-width: 150px;
+    border: 1px solid #ccc;
+    padding: 5px;
+    margin: 5px;
+    background: #f7f7f7;
+}
+
+.container a {
+    font-weight: lighter;
+    color: #666666;
+    font-size: .7em;
+}
