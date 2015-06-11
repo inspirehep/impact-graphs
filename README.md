@@ -1,6 +1,8 @@
 # Publication Impact Glyphs
 
-These glyphs provide an overview of a publication's impact. 
+These glyphs provide an overview of a publication's impact.
+ 
+ ![image](docs/collection.png)
 
 ### Linear Scaling
 
