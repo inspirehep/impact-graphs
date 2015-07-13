@@ -66,11 +66,11 @@ ImpactGraph.load = function (publication_id, url, placement, width, height, opti
         var publications = ImpactGraph.functions.process_data(publication_id, data);
         d3.select(placement + " a").attr('href', 'http://www.inspirehep.net/record/' + publication_id).text(publication_id);
         d3.select("#publication_info").html(data[publication_id].title);
-        d3.select("#publication_id").html(publication_id)
+        d3.select("#publication_id").html(publication_id);
         var svg = d3.select(placement).append("svg").attr("width", width).attr("height", height).append("g").attr("transform", "translate(" + ImpactGraph.margins.left + "," + ImpactGraph.margins.top + ")");
 
         var x_scale = d3.scale.linear()
-            .domain([1965, 2015]).range([10, width - ImpactGraph.margins.left - ImpactGraph.margins.right]);
+            .domain([1955, 2015]).range([10, width - ImpactGraph.margins.left - ImpactGraph.margins.right]);
 
         var y_scale = d3.scale.log()
             .domain([1, 10000]).range([height - ImpactGraph.margins.top - ImpactGraph.margins.bottom, 10]);
