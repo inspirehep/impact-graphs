@@ -1,0 +1,39 @@
+{
+  "inspire_id": 838712,
+  "title": "The r-modes of rotating fluids",
+  "year": 2007,
+  "citations": [
+    {
+      "inspire_id": 122127,
+      "citation_count": 30,
+      "Title": "Raumzeitkonzeptionen in der Quantengravitation (Spacetime in Quantum Gravity)",
+      "year": 2008
+    }
+  ],
+  "references": [
+    {
+      "inspire_id": 122121,
+      "citation_count": 12,
+      "Title": "The Elegant Universe Superstrings, Hidden Dimensions, and the Quest for the Ultimate Theory",
+      "year": 1999
+    },
+    {
+      "inspire_id": 122122,
+      "citation_count": 6,
+      "Title": "Superstrings A Theory of Everything?",
+      "year": 1988
+    },
+    {
+      "inspire_id": 122123,
+      "citation_count": 2,
+      "Title": "The Trouble with Physics The Rise of String Theory, the Fall of a Science, and What Comes Next",
+      "year": 2006
+    },
+    {
+      "inspire_id": 122124,
+      "citation_count": 19,
+      "Title": "Yang-Mills and the Mass Gap",
+      "year": 2005
+    }
+  ]
+}
