@@ -21,13 +21,18 @@
 
 <script>
     var files = [
-        '838712'
+        '41423',
+        '260480',
+        '1305096'
     ];
 
 
     for (var file_idx in files) {
         $(".container").append('<div id="impact_graph_chart_' + files[file_idx] + '"><a href="" target="_blank"></a></div>');
-        ImpactGraph.load('data/' + files[file_idx] + ".json", "#impact_graph_chart_" + files[file_idx], {width: 250, height: 250});
+        ImpactGraph.load('https://qa.inspirehep.net/record/api/impactgraph?recid=' + files[file_idx], "#impact_graph_chart_" + files[file_idx], {
+            width: 140,
+            height: 140
+        });
     }
 
 

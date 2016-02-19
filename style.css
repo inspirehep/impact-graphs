@@ -24,14 +24,21 @@ text {
     cursor: pointer;
 }
 
+.citation_summary {
+    background-color: #f6f6f6;
+}
+.citation_summary rect {
+    fill: #ddd;
+}
+
 .container div {
     float:left;
-    width: 270px;
-    min-width: 270px;
+    width: 140px;
+    min-width: 140px;
     border: 1px solid #ccc;
     padding: 5px;
     margin: 5px;
-    background: #f7f7f7;
+    background: white;
 }
 
 .container a {

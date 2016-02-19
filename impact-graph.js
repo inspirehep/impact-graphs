@@ -11,19 +11,20 @@ var ImpactGraph = (function () {
             .range(["#3B97D3", "#95A5A5", "#2C3E50", "#E64C3C"]),
 
         margins: {
-            "left": 40,
-            "right": 30,
-            "top": 30,
-            "bottom": 30
+            "left": 20,
+            "right": 20,
+            "top": 25,
+            "bottom": 25
         },
         width: 100, height: 100
     };
 
     var process_data = function (data) {
         var publications = [];
+        var _citations_by_year = {};
 
         var focus_publication = data;
-        console.log(focus_publication);
+
         publications.push({
             "id": focus_publication.inspire_id,
             "type": "focus",
@@ -41,6 +42,14 @@ var ImpactGraph = (function () {
                 var year = parseInt(record.year);
 
                 if (!isNaN(year)) {
+
+                    if (keys[key] == "citations") {
+                        if (!(year in _citations_by_year)) {
+                            _citations_by_year[year] = 0;
+                        }
+                        _citations_by_year[year] += 1;
+                    }
+
                     publications.push({
                         "id": record.inspire_id,
                         "type": keys[key] == "citations"
@@ -56,7 +65,40 @@ var ImpactGraph = (function () {
                 }
             }
         }
-        return publications;
+
+        var citations_by_year = [];
+        for (var citation_idx in _citations_by_year) {
+            citations_by_year.push({'year': citation_idx, 'value': _citations_by_year[citation_idx]})
+        }
+
+
+        return {'publications': publications, 'yearly_citations': citations_by_year};
+    };
+
+    var render_citations_by_year = function (svg, citations, xScale, options) {
+
+        var cite_graph_tip = d3.tip().attr('class', 'd3-tip').html(function (d) {
+            return '<p><strong>' + d.year + '</strong></p><p>' + d.value + ' citations</p>';
+        });
+
+        svg.call(cite_graph_tip);
+
+        var yScale = d3.scale.linear().domain([0, d3.max(citations, function (d) {
+            return d.value;
+        })]).range([0, options.margins.bottom -5]);
+
+        var yearly_citations = svg.append('g').attr('class', 'citation_summary').attr('transform', 'translate(-'+ options.margins.left + ',0)');
+        var rect = yearly_citations.selectAll('.rect').data(citations).enter().append('rect');
+
+        rect.attr('x', function (d) {
+            return xScale(d.year);
+        }).attr('y', function (d) {
+            return (options.height-options.margins.bottom) - yScale(d.value);
+        }).attr('width', (options.width * 0.01)).attr('height', function (d) {
+            return yScale(d.value);
+        }).on('mouseover', cite_graph_tip.show)
+            .on('mouseout', cite_graph_tip.hide)
+
     };
 
     return {
@@ -69,9 +111,8 @@ var ImpactGraph = (function () {
             });
 
             d3.json(url, function (data) {
-                var publications = process_data(data);
-
-                console.log(publications);
+                var processed_data = process_data(data);
+                var publications = processed_data['publications'];
 
                 d3.select(placement + " a").attr('href', 'http://www.inspirehep.net/record/' + data.inspire_id).text(data.inspire_id);
                 d3.select("#publication_info").html(data.title);
@@ -83,18 +124,16 @@ var ImpactGraph = (function () {
                 var x_scale = d3.scale.linear()
                     .domain(d3.extent(publications, function (d) {
                         return d.year;
-                    })).range([10, options.width - options.margins.left - options.margins.right]);
+                    })).range([options.margins.left, options.width - options.margins.left - options.margins.right]);
 
                 var y_scale = d3.scale.log()
                     .domain([1, d3.max(publications, function (d) {
                         return +d.citation_count;
                     })])
-                    .range([options.height - options.margins.top - options.margins.bottom, 10]);
+                    .range([options.height - options.margins.bottom, options.margins.top]);
 
-                console.log('Domain');
-                console.log(y_scale.domain());
-                console.log('Range');
-                console.log(y_scale.range());
+
+                render_citations_by_year(svg, processed_data['yearly_citations'], x_scale, options);
 
                 var xAxis = d3.svg.axis().scale(x_scale).orient("bottom").tickPadding(2).tickFormat(d3.format("d"));
                 var yAxis = d3.svg.axis().scale(y_scale).orient("left").tickPadding(2);
@@ -102,7 +141,8 @@ var ImpactGraph = (function () {
                 svg.selectAll("g.y.axis").call(yAxis);
                 svg.selectAll("g.x.axis").call(xAxis);
 
-                svg.selectAll("g.line").data(publications).enter().append("line")
+                var cite_graph_group = svg.append('g').attr('transform', 'translate(-'+ options.margins.left + ',-' + options.margins.top+ ')');
+                cite_graph_group.selectAll("g.line").data(publications).enter().append("line")
                     .style("stroke", function (d) {
                         return options.colors(d.type);
                     })
@@ -122,7 +162,7 @@ var ImpactGraph = (function () {
                     })
                     .style("opacity", .6);
 
-                svg.selectAll("g.node").data(publications).enter().append("circle").attr("r", function (d) {
+                cite_graph_group.selectAll("g.node").data(publications).enter().append("circle").attr("r", function (d) {
                     return d.type == "focus" ? (options.width * 0.01) : options.width * 0.01;
                 }).attr("class", function (d) {
                     return d.type;
@@ -137,7 +177,7 @@ var ImpactGraph = (function () {
                 }).on('mouseover', tip.show)
                     .on('mouseout', tip.hide)
                     .on('click', function (d) {
-                        console.log(d);
+
                         window.open('http://www.inspirehep.net/record/' + d.id, '_blank');
                     });
 
