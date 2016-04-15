@@ -1,0 +1,26 @@
+{
+  "name": "impact-graphs",
+  "version": "0.1.0",
+  "description": "Impact graph visualization library",
+  "author": {
+    "name": "INSPIREHEP",
+    "email": "admin@inspirehep.net"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/inspirehep/impact-graphs.git"
+  },
+  "dependencies": {
+    "d3": "latest",
+    "jquery": "latest",
+    "d3-tip": "latest"
+  },
+  "engines": {
+    "node": ">=0.10"
+  },
+  "license": "GPLv2",
+  "bugs": {
+    "url": "https://github.com/inspirehep/impact-graphs/issues"
+  },
+  "homepage": "https://github.com/inspirehep/impact-graphs#readme"
+}
