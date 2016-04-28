@@ -11,11 +11,15 @@ var ImpactGraph = (function () {
             .range(["#3B97D3", "#95A5A5", "#2C3E50", "#E64C3C"]),
 
         margins: {
-            "left": 20,
+            "left": 30,
             "right": 20,
             "top": 25,
-            "bottom": 25
+            "bottom": 35
         },
+
+        y_gutter: 50,
+        show_axes: false,
+        node_scaling: 0.01,
         width: 100, height: 100,
         'content-type': 'application/json'
 
@@ -87,16 +91,18 @@ var ImpactGraph = (function () {
 
         var yScale = d3.scale.linear().domain([0, d3.max(citations, function (d) {
             return d.value;
-        })]).range([0, options.margins.bottom -5]);
+        })]).range([0, options.margins.bottom - 20]);
 
-        var yearly_citations = svg.append('g').attr('class', 'citation_summary').attr('transform', 'translate(-'+ options.margins.left + ',0)');
+        var yearly_citations = svg.append('g').attr('class', 'citation_summary').attr('transform', 'translate(-' + options.margins.left + ',-10)');
         var rect = yearly_citations.selectAll('.rect').data(citations).enter().append('rect');
 
+        var bar_width = (options.width * options.node_scaling);
         rect.attr('x', function (d) {
-            return xScale(d.year);
+            return xScale(d.year) - (bar_width/2);
         }).attr('y', function (d) {
-            return (options.height-options.margins.bottom) - yScale(d.value);
-        }).attr('width', (options.width * 0.01)).attr('height', function (d) {
+            return (options.height - options.margins.bottom) - yScale(d.value);
+        }).attr('width', bar_width)
+            .attr('height', function (d) {
             return yScale(d.value);
         }).on('mouseover', cite_graph_tip.show)
             .on('mouseout', cite_graph_tip.hide)
@@ -114,7 +120,7 @@ var ImpactGraph = (function () {
 
             d3.json(url)
                 .header('Accept', options['content-type'])
-                .get(function(error, data) {
+                .get(function (error, data) {
                     var processed_data = process_data(data);
                     var publications = processed_data['publications'];
 
@@ -127,22 +133,40 @@ var ImpactGraph = (function () {
                             return d.year;
                         })).range([options.margins.left, options.width - options.margins.left - options.margins.right]);
 
-                    var y_scale = d3.scale.log()
+                    var y_scale = d3.scale.linear()
                         .domain([1, d3.max(publications, function (d) {
                             return +d.citation_count;
                         })])
                         .range([options.height - options.margins.bottom, options.margins.top]);
 
-
                     render_citations_by_year(svg, processed_data['yearly_citations'], x_scale, options);
 
-                    var xAxis = d3.svg.axis().scale(x_scale).orient("bottom").tickPadding(2).tickFormat(d3.format("d"));
-                    var yAxis = d3.svg.axis().scale(y_scale).orient("left").tickPadding(2);
+                    if (options.show_axes) {
+                        var xAxis = d3.svg.axis().scale(x_scale).orient("bottom").tickPadding(2).tickFormat(d3.format("d"));
+                        var yAxis = d3.svg.axis().scale(y_scale).orient("left").tickPadding(2);
 
-                    svg.selectAll("g.y.axis").call(yAxis);
-                    svg.selectAll("g.x.axis").call(xAxis);
 
-                    var cite_graph_group = svg.append('g').attr('transform', 'translate(-'+ options.margins.left + ',-' + options.margins.top+ ')');
+                        if (options.width < 300) {
+                            xAxis.ticks(5);
+                            yAxis.ticks(5);
+                        }
+
+                        yAxis.tickFormat(d3.format("s"));
+
+                        svg.append("g")
+                            .attr("class", "x axis")
+                            .attr("transform", "translate(-" + options.margins.left + "," + (y_scale.range()[0]-10) + ")")
+                            .call(xAxis);
+
+                        svg.append("g")
+                            .attr("class", "y axis")
+                            .attr("transform", "translate(" + (options.margins.left - 30) + "," + (options.margins.top - options.y_gutter) + ")")
+                            .call(yAxis);
+                    }
+
+
+                    var cite_graph_group = svg.append('g').attr('transform', 'translate(-' + options.margins.left + ',-' + options.margins.top + ')');
+
                     cite_graph_group.selectAll("g.line").data(publications).enter().append("line")
                         .style("stroke", function (d) {
                             return options.colors(d.type);
@@ -164,7 +188,7 @@ var ImpactGraph = (function () {
                         .style("opacity", .6);
 
                     cite_graph_group.selectAll("g.node").data(publications).enter().append("circle").attr("r", function (d) {
-                        return d.type == "focus" ? Math.min((options.height * 0.01), 5) : Math.min((options.height * 0.01), 5);
+                        return d.type == "focus" ? Math.min((options.height * options.node_scaling), 5) : Math.min((options.height * options.node_scaling), 5);
                     }).attr("class", function (d) {
                         return d.type;
                     }).attr("cx", function (d) {

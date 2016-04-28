@@ -13,6 +13,7 @@ text {
     font-size: .6em;
     font-family: 'Roboto', sans-serif;
 }
+
 .label {
     fill: #414241;
 }
@@ -33,8 +34,9 @@ text {
 
 .container div {
     float:left;
-    width: 140px;
+
     min-width: 140px;
+    min-height: 500px;
     border: 1px solid #ccc;
     padding: 5px;
     margin: 5px;
