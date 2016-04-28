@@ -21,6 +21,7 @@ var ImpactGraph = (function () {
         show_axes: false,
         node_scaling: 0.01,
         width: 100, height: 100,
+        y_scale: 'linear',
         'content-type': 'application/json'
 
     };
@@ -98,13 +99,13 @@ var ImpactGraph = (function () {
 
         var bar_width = (options.width * options.node_scaling);
         rect.attr('x', function (d) {
-            return xScale(d.year) - (bar_width/2);
+            return xScale(d.year) - (bar_width / 2);
         }).attr('y', function (d) {
             return (options.height - options.margins.bottom) - yScale(d.value);
         }).attr('width', bar_width)
             .attr('height', function (d) {
-            return yScale(d.value);
-        }).on('mouseover', cite_graph_tip.show)
+                return yScale(d.value);
+            }).on('mouseover', cite_graph_tip.show)
             .on('mouseout', cite_graph_tip.hide)
 
     };
@@ -133,10 +134,14 @@ var ImpactGraph = (function () {
                             return d.year;
                         })).range([options.margins.left, options.width - options.margins.left - options.margins.right]);
 
-                    var y_scale = d3.scale.linear()
-                        .domain([1, d3.max(publications, function (d) {
-                            return +d.citation_count;
-                        })])
+                    var y_scale = d3.scale.linear();
+                    if (options.y_scale === 'log') {
+                        y_scale = d3.scale.log();
+                    }
+                    
+                    y_scale.domain([1, d3.max(publications, function (d) {
+                        return +d.citation_count;
+                    })])
                         .range([options.height - options.margins.bottom, options.margins.top]);
 
                     render_citations_by_year(svg, processed_data['yearly_citations'], x_scale, options);
@@ -155,7 +160,7 @@ var ImpactGraph = (function () {
 
                         svg.append("g")
                             .attr("class", "x axis")
-                            .attr("transform", "translate(-" + options.margins.left + "," + (y_scale.range()[0]-10) + ")")
+                            .attr("transform", "translate(-" + options.margins.left + "," + (y_scale.range()[0] - 10) + ")")
                             .call(xAxis);
 
                         svg.append("g")
