@@ -1,52 +1,15 @@
-body {
-    font-family: 'Roboto', sans-serif;
-}
-
 .axis {
     fill: none;
     stroke: #AAA;
     stroke-width: 1px;
 }
-text {
-    stroke: none;
-    fill: #666666;
-    font-size: .6em;
-    font-family: 'Roboto', sans-serif;
-}
 
-.label {
-    fill: #414241;
-}
 .node {
     cursor:pointer;
 }
 .dot {
     opacity: .7;
     cursor: pointer;
-}
-
-.citation_summary {
-    background-color: #f6f6f6;
-}
-.citation_summary rect {
-    fill: #ddd;
-}
-
-.container div {
-    float:left;
-
-    min-width: 140px;
-    min-height: 500px;
-    border: 1px solid #ccc;
-    padding: 5px;
-    margin: 5px;
-    background: white;
-}
-
-.container a {
-    font-weight: lighter;
-    color: #666666;
-    font-size: .7em;
 }
 
 .d3-tip {
