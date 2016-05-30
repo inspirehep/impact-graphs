@@ -7,8 +7,8 @@ var ImpactGraph = (function () {
 
     var options = {
         colors: d3.scale.ordinal()
-            .domain(["citations", "references", "focus", "error"])
-            .range(["#3B97D3", "#95A5A5", "#2C3E50", "#E64C3C"]),
+            .domain(["citations", "references", "focus", "error", "paper_count"])
+            .range(["#3B97D3", "#95A5A5", "#2C3E50", "#E64C3C", "#2C3E50"]),
 
         margins: {
             "left": 30,
@@ -82,16 +82,16 @@ var ImpactGraph = (function () {
         return {'publications': publications, 'yearly_citations': citations_by_year};
     };
 
-    var render_citations_by_year = function (svg, citations, xScale, options) {
+    var render_citations_by_year = function (svg, citations, xScale, options, variable) {
 
         var cite_graph_tip = d3.tip().attr('class', 'd3-tip').html(function (d) {
-            return '<p><strong>' + d.year + '</strong></p><p>' + d.value + ' citations</p>';
+            return '<p><strong>' + d.year + '</strong></p><p>' + d[variable] + ' citations</p>';
         });
 
         svg.call(cite_graph_tip);
 
         var yScale = d3.scale.linear().domain([0, d3.max(citations, function (d) {
-            return d.value;
+            return d[variable];
         })]).range([0, options.margins.bottom - 20]);
 
         var yearly_citations = svg.append('g').attr('class', 'citation_summary').attr('transform', 'translate(-' + options.margins.left + ',-10)');
@@ -101,19 +101,105 @@ var ImpactGraph = (function () {
         rect.attr('x', function (d) {
             return xScale(d.year) - (bar_width / 2);
         }).attr('y', function (d) {
-            return (options.height - options.margins.bottom) - yScale(d.value);
+            return (options.height - options.margins.bottom) - yScale(d[variable]);
         }).attr('width', bar_width)
             .attr('height', function (d) {
-                return yScale(d.value);
-            }).on('mouseover', cite_graph_tip.show)
+                return yScale(d[variable]);
+            })
+            .on('mouseover', cite_graph_tip.show)
             .on('mouseout', cite_graph_tip.hide)
 
     };
 
-    return {
-        load: function (url, placement, custom_options) {
+    var render_bar_graph = function (svg, data, xVar, yVar, options, tip) {
 
-            options = $.extend([], options, custom_options);
+        var x_extent = d3.extent(data, function (d) {
+            return d[xVar];
+        });
+
+        var bar_count = x_extent[1] - x_extent[0];
+
+        var bar_width = ((options.width - (bar_count * 5)) / bar_count);
+        var xScale = d3.scale.linear()
+            .domain(x_extent).range([bar_width, options.width - bar_width]);
+
+        var yScale = d3.scale.linear().domain([0, d3.max(data, function (d) {
+            return d[yVar];
+        })]).range([0, options.height]);
+
+        var plot = svg.append('g');
+        var rect = plot.selectAll('.rect').data(data).enter().append('rect');
+
+        rect.attr('x', function (d) {
+            return xScale(d[xVar]) - (bar_width / 2);
+        }).attr('y', function (d) {
+            return options.height - yScale(d[yVar]);
+        }).attr('width', bar_width)
+            .attr('height', function (d) {
+                return yScale(d[yVar]);
+            })
+            .style(options.style)
+            .on('mouseover', tip.show)
+            .on('mouseout', tip.hide)
+    };
+
+    var render_line_graph = function (svg, data, xVar, yVar, options) {
+        var xScale = d3.scale.linear()
+            .domain(d3.extent(data, function (d) {
+                return d[xVar];
+            })).range([0, options.width]);
+
+        var yScale = d3.scale.linear().domain([0, d3.max(data, function (d) {
+            return d[yVar];
+        })]).range([0, options.height]);
+
+        var plot = svg.append('g');
+
+        var line = d3.svg.line()
+            .x(function(d) { return xScale(d[xVar]); })
+            .y(function(d) { return yScale.range()[1] - yScale(d[yVar]); });
+
+        plot.append("path")
+            .datum(data)
+            .attr("class", "line")
+            .attr("d", line)
+            .style(options.style);
+    };
+
+    var extend_options = function (options, custom_options) {
+        return $.extend([], options, custom_options);
+    };
+
+    return {
+        draw_citation_graph: function (url, placement, custom_options) {
+            options = extend_options(options, custom_options);
+
+            var tip = d3.tip().attr('class', 'd3-tip').html(function (d) {
+                return '<p><strong>' + d.year + '</strong></p><p>' + d.paper_count + ' Papers. ' + d.citation_count + ' total citations</p>';
+            });
+
+            d3.json(url)
+                .header('Accept', options['content-type'])
+                .get(function (error, data) {
+                    var svg = d3.select(placement).append("svg")
+                        .attr("width", options.width)
+                        .attr("height", options.height).append("g");
+
+                    svg.call(tip);
+
+                    options['style'] = {"fill":options.colors("paper_count")};
+                    render_bar_graph(svg, data['citations'], "year", "paper_count",
+                        options, tip);
+
+                    options['style'] = {"stroke": options.colors("citations"),  'stroke-width': 2, 'fill': 'none'};
+                    render_line_graph(svg, data['citations'], "year", "citation_count",
+                        options, tip);
+                })
+        },
+
+        draw_impact_graph: function (url, placement, custom_options) {
+
+            options = extend_options(options, custom_options);
 
             var tip = d3.tip().attr('class', 'd3-tip').html(function (d) {
                 return '<p><strong>' + d.year + '</strong></p><p>' + d.title + '</p><p>' + d.citation_count + ' Citations</p>';
@@ -138,13 +224,13 @@ var ImpactGraph = (function () {
                     if (options.y_scale === 'log') {
                         y_scale = d3.scale.log();
                     }
-                    
+
                     y_scale.domain([1, d3.max(publications, function (d) {
-                        return +d.citation_count;
-                    })])
+                            return +d.citation_count;
+                        })])
                         .range([options.height - options.margins.bottom, options.margins.top]);
 
-                    render_citations_by_year(svg, processed_data['yearly_citations'], x_scale, options);
+                    render_citations_by_year(svg, processed_data['yearly_citations'], x_scale, options, "value");
 
                     if (options.show_axes) {
                         var xAxis = d3.svg.axis().scale(x_scale).orient("bottom").tickPadding(2).tickFormat(d3.format("d"));

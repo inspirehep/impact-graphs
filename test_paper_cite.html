@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Impact graphs</title>
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,200' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="http://rawgithub.com/Caged/d3-tip/master/examples/example-styles.css">
+    <link href="style.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container" id="citation_count_test1"></div>
+<div class="container" id="citation_count_test2"></div>
+
+</body>
+<script src="node_modules/jquery/dist/jquery.min.js"></script>
+<script src="node_modules/d3/d3.min.js" type="text/javascript"></script>
+<script src="node_modules/d3-tip/index.js"></script>
+<script src="impact-graph.js" type="text/javascript"></script>
+
+<script>
+
+    ImpactGraph.draw_citation_graph('data/test_citation.json', "#citation_count_test1", {
+        width: 130,
+        height: 40,
+        node_scaling: 0.02,
+        'content-type': 'application/x-impact.graph+json',
+        margins: {left:0,right:0,top:0,bottom:0}
+    });
+
+
+    ImpactGraph.draw_citation_graph('data/test_citation2.json', "#citation_count_test2", {
+        width: 130,
+        height: 40,
+        node_scaling: 0.02,
+        'content-type': 'application/x-impact.graph+json',
+        margins: {left:0,right:0,top:0,bottom:0}
+    });
+
+</script>
+</html>

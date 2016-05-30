@@ -25,11 +25,12 @@
 
     for (var file_idx in files) {
         $(".container").append('<div id="impact_graph_chart_' + files[file_idx] + '"><a href="" target="_blank"></a></div>');
-        ImpactGraph.load('data/' + files[file_idx] + '.json', "#impact_graph_chart_" + files[file_idx], {
+        ImpactGraph.draw_impact_graph('data/' + files[file_idx] + '.json', "#impact_graph_chart_" + files[file_idx], {
             width: 500,
-            height: 140,
+            height: 240,
             show_axes: true,
-            y_scale: 'linear',
+            node_scaling: 0.02,
+            y_scale: 'log',
             'content-type': 'application/x-impact.graph+json'
         });
     }

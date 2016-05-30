@@ -1,0 +1,45 @@
+{
+  "citations": [
+    {
+      "citation_count": 3,
+      "paper_count": 1,
+      "year": 2004
+    },
+    {
+      "citation_count": 3,
+      "paper_count": 0,
+      "year": 2006
+    },
+    {
+      "citation_count": 8,
+      "paper_count": 4,
+      "year": 2007
+    },
+    {
+      "citation_count": 19,
+      "paper_count": 3,
+      "year": 2008
+    },
+    {
+      "citation_count": 17,
+      "paper_count": 2,
+      "year": 2009
+    },
+    {
+      "citation_count": 77,
+      "paper_count": 5,
+      "year": 2010
+    },
+    {
+      "citation_count": 79,
+      "paper_count": 2,
+      "year": 2012
+    },
+
+    {
+      "citation_count": 85,
+      "paper_count": 2,
+      "year": 2013
+    }
+  ]
+}
