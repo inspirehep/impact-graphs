@@ -106,6 +106,7 @@ var ImpactGraph = (function () {
             .attr('height', function (d) {
                 return yScale(d[variable]);
             })
+            .style('fill', '#3B97D3')
             .on('mouseover', cite_graph_tip.show)
             .on('mouseout', cite_graph_tip.hide)
 
@@ -276,7 +277,7 @@ var ImpactGraph = (function () {
                             var focus_node_citations = data.citations.length;
                             return focus_node_citations == 0 ? y_scale(1) : y_scale(focus_node_citations);
                         })
-                        .style("opacity", .6);
+                        .style("opacity", .7);
 
                     cite_graph_group.selectAll("g.node").data(publications).enter().append("circle").attr("r", function (d) {
                         return d.type == "focus" ? Math.min((options.height * options.node_scaling), 5) : Math.min((options.height * options.node_scaling), 5);
@@ -289,7 +290,7 @@ var ImpactGraph = (function () {
                     }).style("fill", function (d) {
                         return options.colors(d.type);
                     }).style("opacity", function (d) {
-                        return d.type == "focus" ? 1 : .5;
+                        return d.type == "focus" ? 1 : .7;
                     }).on('mouseover', tip.show)
                         .on('mouseout', tip.hide)
                         .on('click', function (d) {
