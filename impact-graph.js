@@ -277,7 +277,9 @@ var ImpactGraph = (function () {
                     return (d._dist * -1) + scaled_edges(d.year);
                 });
 
-                svg.selectAll(".node-" + d.id).transition().style('opacity', 0);
+                svg.selectAll(".node-" + d.id).transition().style('opacity', function(d) {
+                    return d.type !== "focus" ? 0 : 1;
+                });
             }
             tip.hide(d);
         })
