@@ -8,6 +8,90 @@
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+    <style>
+        .axis {
+            fill: none;
+            stroke: #AAA;
+            stroke-width: 1px;
+        }
+
+        text {
+            fill: black;
+            stroke: none;
+            font-size: .6em;
+        }
+
+        .node {
+            cursor: pointer;
+        }
+
+        .dot {
+            opacity: .7;
+            cursor: pointer;
+        }
+
+        .d3-tip {
+            line-height: 1;
+            font-weight: normal;
+            font-size: 11px;
+            padding: 10px;
+            background: rgba(44, 62, 80, 0.8);
+            color: #fff;
+            max-width: 200px;
+            border-radius: 2px;
+            pointer-events: none;
+        }
+
+        .d3-tip p {
+            margin: 5px;
+        }
+
+        /* Creates a small triangle extender for the tooltip */
+        .d3-tip:after {
+            box-sizing: border-box;
+            display: inline;
+            font-size: 10px;
+            width: 100%;
+            line-height: 1;
+            color: rgba(44, 62, 80, 0.8);
+            position: absolute;
+            pointer-events: none;
+        }
+
+        /* Northward tooltips */
+        .d3-tip.n:after {
+            content: "\25BC";
+            margin: -1px 0 0 0;
+            top: 100%;
+            left: 0;
+            text-align: center;
+        }
+
+        /* Eastward tooltips */
+        .d3-tip.e:after {
+            content: "\25C0";
+            margin: -4px 0 0 0;
+            top: 50%;
+            left: -8px;
+        }
+
+        /* Southward tooltips */
+        .d3-tip.s:after {
+            content: "\25B2";
+            margin: 0 0 1px 0;
+            top: -8px;
+            left: 0;
+            text-align: center;
+        }
+
+        /* Westward tooltips */
+        .d3-tip.w:after {
+            content: "\25B6";
+            margin: -4px 0 0 -1px;
+            top: 50%;
+            left: 100%;
+        }
+    </style>
 </head>
 <body>
 <section class="page-header">
@@ -25,29 +109,74 @@
         <a id="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages" aria-hidden="true"><span
                 aria-hidden="true" class="octicon octicon-link"></span></a>Overview.</h3>
 
-    <p>Measuring scholarly impact has been a topic of much interest in recent years. While many use the citation count as a primary
-        indicator of a publications impact, the quality and impact of those citations will vary. Additionally, it is often difficult to see
-        where a paper sits among other papers in the same research area. Questions we wished to answer through this visualization
-        were: is a publication cited less than publications in the field?; is a publication cited by high or low impact publications?;
-        and can we visually compare the impact of publications across a result set? In this work we address the above questions
-        through a new visualization of publication impact. Our technique has been applied to the visualization of citation information
-        in INSPIREHEP (<a href="www.inspirehep.net" target="_blank">www.inspirehep.net</a>), the largest high energy physics publication repository.</p>
+    <p>Measuring scholarly impact has been a topic of much interest in recent years. While many use the citation count
+        as a primary
+        indicator of a publications impact, the quality and impact of those citations will vary. Additionally, it is
+        often difficult to see
+        where a paper sits among other papers in the same research area. Questions we wished to answer through this
+        visualization
+        were: is a publication cited less than publications in the field?; is a publication cited by high or low impact
+        publications?;
+        and can we visually compare the impact of publications across a result set? In this work we address the above
+        questions
+        through a new visualization of publication impact. Our technique has been applied to the visualization of
+        citation information
+        in INSPIREHEP (<a href="www.inspirehep.net" target="_blank">www.inspirehep.net</a>), the largest high energy
+        physics publication repository.</p>
 
     <h3>
         <a id="impact-graph" class="anchor" href="#impact-graph" aria-hidden="true">
             <span aria-hidden="true" class="octicon octicon-link"></span></a>Impact Graph</h3>
 
+    <div id="impact_graph_linear"></div>
+    <div id="impact_graph_log"></div>
+
+    <div class="highlight highlight-source-js"><pre>
+<span class="pl-smi">ImpactGraph</span>.<span class="pl-en">draw_impact_graph</span>(<span class="pl-s"><span
+            class="pl-pds">'</span>data/838712.json<span class="pl-pds">'</span></span>, <span class="pl-s"><span
+            class="pl-pds">"</span>#impact_graph_chart<span class="pl-pds">"</span></span>, {
+        width<span class="pl-k">:</span> <span class="pl-c1">600</span>,
+        height<span class="pl-k">:</span> <span class="pl-c1">300</span>,
+        show_axes<span class="pl-k">:</span> <span class="pl-c1">true</span>,
+        node_scaling<span class="pl-k">:</span> <span class="pl-c1">0.012</span>,
+        y_scale<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>log<span
+            class="pl-pds">' // or linear</span></span>,
+        <span class="pl-s"><span class="pl-pds">'</span>content-type<span class="pl-pds">'</span></span><span
+            class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>application/x-impact.graph+json<span
+            class="pl-pds">'</span></span>
+    });
+</pre>
+    </div>
+
+
     <h3>
         <a id="impact-glyphs" class="anchor" href="#impact-glyphs" aria-hidden="true">
             <span aria-hidden="true" class="octicon octicon-link"></span></a>Impact Glyph (or Glaph)</h3>
+
+    <div id="impact_glyph"></div>
+
+    <div class="highlight highlight-source-js"><pre>
+<span class="pl-smi">ImpactGraph</span>.<span class="pl-en">draw_impact_summary</span>(<span class="pl-s"><span
+            class="pl-pds">'</span>data/author.json<span class="pl-pds">'</span></span>, <span class="pl-s"><span
+            class="pl-pds">"</span>#impact_graph_chart<span class="pl-pds">"</span></span>, {
+        width<span class="pl-k">:</span> <span class="pl-c1">600</span>,
+        height<span class="pl-k">:</span> <span class="pl-c1">300</span>,
+        show_axes<span class="pl-k">:</span> <span class="pl-c1">true</span>,
+        node_scaling<span class="pl-k">:</span> <span class="pl-c1">0.012</span>,
+        y_scale<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>log<span
+            class="pl-pds">'</span></span>,
+        <span class="pl-s"><span class="pl-pds">'</span>content-type<span class="pl-pds">'</span></span><span
+            class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>application/x-impact.graph+json<span
+            class="pl-pds">'</span></span>
+    });
+</pre>
+    </div>
 
     <h3>
         <a id="impact-collection" class="anchor" href="#impact-collection" aria-hidden="true">
             <span aria-hidden="true" class="octicon octicon-link"></span></a>Impact Collection</h3>
 
-    <div id="impact-collection-graph">
-
-    </div>
+    <div id="impact-collection-graph"></div>
 
     <div class="highlight highlight-source-js"><pre>
 <span class="pl-smi">ImpactGraph</span>.<span class="pl-en">draw_impact_summary</span>(<span class="pl-s"><span
@@ -89,10 +218,40 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js" type="text/javascript"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.6.7/d3-tip.min.js" type="text/javascript"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" type="text/javascript"></script>
-<script src="https://raw.githubusercontent.com/inspirehep/impact-graphs/master/impact-graph.js"></script>
+<script src="lib/impact-graph.js"></script>
 
 <script>
-    ImpactGraph.draw_impact_summary('', "#impact_graph_chart", {
+
+    ImpactGraph.draw_impact_graph('data/838712.json', "#impact_glyph", {
+        width: 150,
+        height: 150,
+        show_axes: false,
+        render_citations: true,
+        node_scaling: 0.02,
+        y_scale: 'log',
+        'content-type': 'application/x-impact.graph+json'
+    });
+
+    ImpactGraph.draw_impact_graph('data/838712.json', "#impact_graph_linear", {
+        width: 600,
+        height: 240,
+        show_axes: true,
+        node_scaling: 0.01,
+        y_scale: 'linear',
+        'content-type': 'application/x-impact.graph+json'
+    });
+
+    ImpactGraph.draw_impact_graph('data/838712.json', "#impact_graph_log", {
+        width: 600,
+        height: 240,
+        show_axes: true,
+        node_scaling: 0.01,
+        y_scale: 'log',
+        'content-type': 'application/x-impact.graph+json'
+    });
+
+
+    ImpactGraph.draw_impact_summary('data/author.json', "#impact-collection-graph", {
         width: 600,
         height: 300,
         show_axes: true,
@@ -100,6 +259,8 @@
         y_scale: 'log',
         'content-type': 'application/x-impact.graph+json'
     });
+
+
 </script>
 </body>
 </html>

@@ -1,0 +1,181 @@
+{
+  "papers": [
+    {
+      "inspire_id": 838712,
+      "title": "The r-modes of rotating fluids",
+      "year": 2003,
+      "citations": [
+        {
+          "inspire_id": 122127,
+          "citation_count": 30,
+          "title": "Raumzeitkonzeptionen in der Quantengravitation (Spacetime in Quantum Gravity)",
+          "year": 2008
+        },
+        {
+          "inspire_id": 122126,
+          "citation_count": 25,
+          "title": "Raumzeitkonzeptionen in der Quantengravitation (Spacetime in Quantum Gravity)",
+          "year": 2008
+        },
+        {
+          "inspire_id": 122120,
+          "citation_count": 25,
+          "title": "Raumzeitkonzeptionen in der Quantengravitation (Spacetime in Quantum Gravity)",
+          "year": 2009
+        },
+        {
+          "inspire_id": 122120,
+          "citation_count": 15,
+          "title": "Raumzeitkonzeptionen in der Quantengravitation (Spacetime in Quantum Gravity)",
+          "year": 2015
+        }
+      ],
+      "references": [
+        {
+          "inspire_id": 122121,
+          "citation_count": 12,
+          "title": "The Elegant Universe Superstrings, Hidden Dimensions, and the Quest for the Ultimate Theory",
+          "year": 1999
+        },
+        {
+          "inspire_id": 122122,
+          "citation_count": 6,
+          "title": "Superstrings A Theory of Everything?",
+          "year": 1988
+        },
+        {
+          "inspire_id": 122123,
+          "citation_count": 2,
+          "title": "The Trouble with Physics The Rise of String Theory, the Fall of a Science, and What Comes Next",
+          "year": 2006
+        },
+        {
+          "inspire_id": 122124,
+          "citation_count": 19,
+          "title": "Yang-Mills and the Mass Gap",
+          "year": 2005
+        }
+      ]
+    }, {
+      "inspire_id": 838716,
+      "title": "The r-modes of rotating fluids",
+      "year": 2008,
+      "citations": [
+        {
+          "inspire_id": 122127,
+          "citation_count": 69,
+          "title": "Raumzeitkonzeptionen in der Quantengravitation (Spacetime in Quantum Gravity)",
+          "year": 2008
+        },
+        {
+          "inspire_id": 122127,
+          "citation_count": 154,
+          "title": "Raumzeitkonzeptionen in der Quantengravitation (Spacetime in Quantum Gravity)",
+          "year": 2015
+        },
+        {
+          "inspire_id": 122126,
+          "citation_count": 25,
+          "title": "Raumzeitkonzeptionen in der Quantengravitation (Spacetime in Quantum Gravity)",
+          "year": 2008
+        },
+        {
+          "inspire_id": 122127,
+          "citation_count": 68,
+          "title": "Raumzeitkonzeptionen in der Quantengravitation (Spacetime in Quantum Gravity)",
+          "year": 2008
+        },
+        {
+          "inspire_id": 122126,
+          "citation_count": 245,
+          "title": "Raumzeitkonzeptionen in der Quantengravitation (Spacetime in Quantum Gravity)",
+          "year": 2014
+        },
+        {
+          "inspire_id": 122120,
+          "citation_count": 25,
+          "title": "Raumzeitkonzeptionen in der Quantengravitation (Spacetime in Quantum Gravity)",
+          "year": 2009
+        },
+        {
+          "inspire_id": 122120,
+          "citation_count": 15,
+          "title": "Raumzeitkonzeptionen in der Quantengravitation (Spacetime in Quantum Gravity)",
+          "year": 2015
+        }
+      ],
+      "references": [
+        {
+          "inspire_id": 122121,
+          "citation_count": 12,
+          "title": "The Elegant Universe Superstrings, Hidden Dimensions, and the Quest for the Ultimate Theory",
+          "year": 1999
+        },
+        {
+          "inspire_id": 122122,
+          "citation_count": 6,
+          "title": "Superstrings A Theory of Everything?",
+          "year": 1988
+        },
+        {
+          "inspire_id": 122123,
+          "citation_count": 2,
+          "title": "The Trouble with Physics The Rise of String Theory, the Fall of a Science, and What Comes Next",
+          "year": 2006
+        },
+        {
+          "inspire_id": 122124,
+          "citation_count": 19,
+          "title": "Yang-Mills and the Mass Gap",
+          "year": 2005
+        }
+      ]
+    },
+
+    {
+      "inspire_id": 838719,
+      "title": "The r-modes of rotating fluids",
+      "year": 2009,
+      "citations": [
+        {
+          "inspire_id": 122120,
+          "citation_count": 23,
+          "title": "Raumzeitkonzeptionen in der Quantengravitation (Spacetime in Quantum Gravity)",
+          "year": 2016
+        },
+        {
+          "inspire_id": 122120,
+          "citation_count": 15,
+          "title": "Raumzeitkonzeptionen in der Quantengravitation (Spacetime in Quantum Gravity)",
+          "year": 2016
+        }
+      ],
+      "references": [
+        {
+          "inspire_id": 122121,
+          "citation_count": 42,
+          "title": "The Elegant Universe Superstrings, Hidden Dimensions, and the Quest for the Ultimate Theory",
+          "year": 1989
+        },
+        {
+          "inspire_id": 122122,
+          "citation_count": 12,
+          "title": "Superstrings A Theory of Everything?",
+          "year": 1988
+        },
+        {
+          "inspire_id": 122123,
+          "citation_count": 36,
+          "title": "The Trouble with Physics The Rise of String Theory, the Fall of a Science, and What Comes Next",
+          "year": 2006
+        },
+        {
+          "inspire_id": 122124,
+          "citation_count": 67,
+          "title": "Yang-Mills and the Mass Gap",
+          "year": 2005
+        }
+      ]
+    }
+  ]
+}
