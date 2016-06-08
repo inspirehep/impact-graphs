@@ -6,11 +6,54 @@
     <link href='http://fonts.googleapis.com/css?family=Roboto:400,200' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="http://rawgithub.com/Caged/d3-tip/master/examples/example-styles.css">
     <link href="style.css" rel="stylesheet">
+
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600' rel='stylesheet' type='text/css'>
+
+    <style>
+
+        body, html {
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        .container {
+            float: left;
+            height: 300px;
+            text-align: center;
+        }
+
+        h4 {
+            text-transform: uppercase;
+        }
+    </style>
 </head>
 <body>
 
-<div class="container">
+<div>
 
+    <h4>Impact Graph</h4>
+
+    <p>Example of the basic Impact graph visualized at different sizes, with various options</p>
+
+    <div class="container" id="impact_graph_linear">
+        <h4>Linear Scaling</h4>
+    </div>
+
+    <div class="container" id="impact_graph_log">
+        <h4>Log Scaling</h4>
+    </div>
+
+    <div class="container" id="impact_graph_no_axes">
+        <h4>No Axes</h4>
+    </div>
+
+    <div class="container" id="impact_graph_small">
+        <h4>Glyph (no count summary)</h4>
+
+    </div>
+
+    <div class="container" id="impact_graph_small_no_count">
+        <h4>Glyph (no count summary)</h4>
+    </div>
 </div>
 
 </body>
@@ -23,17 +66,52 @@
     var files = ['838712'];
 
 
-    for (var file_idx in files) {
-        $(".container").append('<div id="impact_graph_chart_' + files[file_idx] + '"><a href="" target="_blank"></a></div>');
-        ImpactGraph.draw_impact_graph('data/' + files[file_idx] + '.json', "#impact_graph_chart_" + files[file_idx], {
-            width: 500,
-            height: 240,
-            show_axes: true,
-            node_scaling: 0.02,
-            y_scale: 'log',
-            'content-type': 'application/x-impact.graph+json'
-        });
-    }
+    ImpactGraph.draw_impact_graph('data/838712.json', "#impact_graph_linear", {
+        width: 400,
+        height: 240,
+        show_axes: true,
+        node_scaling: 0.01,
+        y_scale: 'linear',
+        'content-type': 'application/x-impact.graph+json'
+    });
+
+    ImpactGraph.draw_impact_graph('data/838712.json', "#impact_graph_log", {
+        width: 400,
+        height: 240,
+        show_axes: true,
+        node_scaling: 0.01,
+        y_scale: 'log',
+        'content-type': 'application/x-impact.graph+json'
+    });
+
+    ImpactGraph.draw_impact_graph('data/838712.json', "#impact_graph_no_axes", {
+        width: 400,
+        height: 240,
+        show_axes: false,
+        node_scaling: 0.01,
+        y_scale: 'log',
+        'content-type': 'application/x-impact.graph+json'
+    });
+
+    ImpactGraph.draw_impact_graph('data/838712.json', "#impact_graph_small", {
+        width: 150,
+        height: 150,
+        show_axes: false,
+        render_citations: true,
+        node_scaling: 0.01,
+        y_scale: 'log',
+        'content-type': 'application/x-impact.graph+json'
+    });
+
+    ImpactGraph.draw_impact_graph('data/838712.json', "#impact_graph_small_no_count", {
+        width: 150,
+        height: 150,
+        show_axes: false,
+        render_citations: false,
+        node_scaling: 0.01,
+        y_scale: 'log',
+        'content-type': 'application/x-impact.graph+json'
+    });
 
 
 </script>

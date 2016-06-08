@@ -19,6 +19,7 @@ var ImpactGraph = (function () {
 
         y_gutter: 50,
         show_axes: false,
+        render_citations: true,
         node_scaling: 0.01,
         width: 100, height: 100,
         y_scale: 'linear',
@@ -157,8 +158,12 @@ var ImpactGraph = (function () {
         var plot = svg.append('g');
 
         var line = d3.svg.line()
-            .x(function(d) { return xScale(d[xVar]); })
-            .y(function(d) { return yScale.range()[1] - yScale(d[yVar]); });
+            .x(function (d) {
+                return xScale(d[xVar]);
+            })
+            .y(function (d) {
+                return yScale.range()[1] - yScale(d[yVar]);
+            });
 
         plot.append("path")
             .datum(data)
@@ -171,12 +176,124 @@ var ImpactGraph = (function () {
         return $.extend([], options, custom_options);
     };
 
+    var render_impact_graph = function (svg, data, processed_data, x_scale, y_scale, tip, custom_options) {
+
+        if (custom_options.render_citations && !custom_options.is_collection)
+            render_citations_by_year(svg, processed_data['yearly_citations'], x_scale, custom_options, "value");
+
+        if (custom_options.show_axes) {
+            var xAxis = d3.svg.axis().scale(x_scale).orient("bottom").tickPadding(2).tickFormat(d3.format("d"));
+            var yAxis = d3.svg.axis().scale(y_scale).orient("left").tickPadding(2);
+
+            if (custom_options.width < 300) {
+                xAxis.ticks(5);
+                yAxis.ticks(5);
+            }
+
+            yAxis.tickFormat(d3.format("s"));
+
+            svg.append("g")
+                .attr("class", "x axis")
+                .attr("transform", "translate(-" + custom_options.margins.left + "," + (y_scale.range()[0] - 10) + ")")
+                .call(xAxis);
+
+            svg.append("g")
+                .attr("class", "y axis")
+                .attr("transform", "translate(" + (custom_options.margins.left - 30) + "," + (custom_options.margins.top - custom_options.y_gutter) + ")")
+                .call(yAxis);
+        }
+
+        if (custom_options.is_collection) {
+            var scaled_edges = d3.scale.linear().domain(x_scale.domain()).range([0, 30]);
+        }
+
+        var cite_graph_group = svg.append('g').attr('transform', 'translate(-' + custom_options.margins.left + ',-' + custom_options.margins.top + ')');
+
+        var line = cite_graph_group.selectAll("g.line").data(processed_data["publications"]).enter().append("line")
+            .style("stroke", function (d) {
+                return options.colors(d.type);
+            })
+            .style("stroke-width", 1.5)
+            .attr("x1", function (d) {
+                d.x1 = x_scale(d.year);
+                return d.x1;
+            })
+            .attr("y1", function (d) {
+                d.y1 = d.citation_count == 0 ? y_scale(1) : y_scale(+d.citation_count);
+                return d.y1;
+            })
+            .attr('class', function (d) {
+                return "link-" + data.inspire_id;
+            })
+            .attr("x2", function (d) {
+                d.x2 = x_scale(data.year);
+                return d.x2;
+            }).attr("y2", function (d) {
+                var focus_node_citations = data.citations.length;
+                d.y2 = focus_node_citations == 0 ? y_scale(1) : y_scale(focus_node_citations);
+                return d.y2;
+            })
+            .style("opacity", .7);
+
+        if (custom_options.is_collection) {
+            line.attr("stroke-dasharray", function (d) {
+                var a = d.x1 - d.x2;
+                var b = d.y1 - d.y2;
+                var c = Math.sqrt(a * a + b * b);
+                d._dist = c;
+                return c + ", " + c;
+            }).attr("stroke-dashoffset", function (d) {
+                return (d._dist * -1) + scaled_edges(d.year);
+            })
+        }
+
+
+        cite_graph_group.selectAll("g.node").data(processed_data["publications"]).enter().append("circle").attr("r", function (d) {
+            return d.type == "focus" ? Math.min((custom_options.height * custom_options.node_scaling), 5) : Math.min((custom_options.height * custom_options.node_scaling), 5);
+        }).attr("class", function (d) {
+            return 'node ' + d.type + " node-" + data.inspire_id;
+        }).attr("cx", function (d) {
+            return x_scale(d.year);
+        }).attr("cy", function (d) {
+            return d.citation_count == 0 ? y_scale(1) : y_scale(+d.citation_count);
+        }).style("fill", function (d) {
+            return custom_options.colors(d.type);
+        }).style("opacity", function (d) {
+            if (custom_options.is_collection && d.type != "focus") return 0;
+            return 1;
+        }).on('mouseover', function (d) {
+            if (custom_options.is_collection) {
+                svg.selectAll(".link-" + d.id).transition().attr("stroke-dashoffset", function (d) {
+                    return 0;
+                });
+
+                svg.selectAll(".node-" + d.id).transition().style('opacity', 1);
+            }
+            tip.show(d);
+
+        }).on('mouseout', function (d) {
+            if (custom_options.is_collection) {
+                svg.selectAll(".link-" + d.id).transition().attr("stroke-dashoffset", function (d) {
+                    return (d._dist * -1) + scaled_edges(d.year);
+                });
+
+                svg.selectAll(".node-" + d.id).transition().style('opacity', 0);
+            }
+            tip.hide(d);
+        })
+        .on('click', function (d) {
+            window.open('http://www.inspirehep.net/record/' + d.id, '_blank');
+        });
+    };
+
+
     return {
         draw_citation_graph: function (url, placement, custom_options) {
             options = extend_options(options, custom_options);
 
             var tip = d3.tip().attr('class', 'd3-tip').html(function (d) {
-                return '<p><strong>' + d.year + '</strong></p><p>' + d.paper_count + ' Papers. ' + d.citation_count + ' total citations</p>';
+                return '<p><strong>' + d.year + '</strong></p><p>' + d.paper_count + ' Papers. '
+                    + d.citation_count + ' total citations</p>';
             });
 
             d3.json(url)
@@ -188,11 +305,11 @@ var ImpactGraph = (function () {
 
                     svg.call(tip);
 
-                    options['style'] = {"fill":options.colors("paper_count")};
+                    options['style'] = {"fill": options.colors("paper_count")};
                     render_bar_graph(svg, data['citations'], "year", "paper_count",
                         options, tip);
 
-                    options['style'] = {"stroke": options.colors("citations"),  'stroke-width': 2, 'fill': 'none'};
+                    options['style'] = {"stroke": options.colors("citations"), 'stroke-width': 2, 'fill': 'none'};
                     render_line_graph(svg, data['citations'], "year", "citation_count",
                         options, tip);
                 })
@@ -200,7 +317,7 @@ var ImpactGraph = (function () {
 
         draw_impact_graph: function (url, placement, custom_options) {
 
-            options = extend_options(options, custom_options);
+            custom_options = extend_options(options, custom_options);
 
             var tip = d3.tip().attr('class', 'd3-tip').html(function (d) {
                 return '<p><strong>' + d.year + '</strong></p><p>' + d.title + '</p><p>' + d.citation_count + ' Citations</p>';
@@ -212,92 +329,95 @@ var ImpactGraph = (function () {
                     var processed_data = process_data(data);
                     var publications = processed_data['publications'];
 
-                    var svg = d3.select(placement).append("svg").attr("width", options.width).attr("height", options.height).append("g").attr("transform", "translate(" + options.margins.left + "," + options.margins.top + ")");
+                    var svg = d3.select(placement).append("svg").attr("width", custom_options.width).attr("height", custom_options.height).append("g").attr("transform", "translate(" + options.margins.left + "," + options.margins.top + ")");
 
                     svg.call(tip);
 
                     var x_scale = d3.scale.linear()
                         .domain(d3.extent(publications, function (d) {
                             return d.year;
-                        })).range([options.margins.left, options.width - options.margins.left - options.margins.right]);
+                        })).range([custom_options.margins.left,
+                            custom_options.width - custom_options.margins.left - custom_options.margins.right]);
 
                     var y_scale = d3.scale.linear();
-                    if (options.y_scale === 'log') {
+                    if (custom_options.y_scale === 'log') {
                         y_scale = d3.scale.log();
                     }
 
                     y_scale.domain([1, d3.max(publications, function (d) {
-                            return +d.citation_count;
-                        })])
-                        .range([options.height - options.margins.bottom, options.margins.top]);
+                        return +d.citation_count;
+                    })])
+                        .range([custom_options.height - custom_options.margins.bottom, custom_options.margins.top]);
 
-                    render_citations_by_year(svg, processed_data['yearly_citations'], x_scale, options, "value");
+                    render_impact_graph(svg, data, processed_data, x_scale, y_scale, tip, custom_options);
+                });
+        },
 
-                    if (options.show_axes) {
-                        var xAxis = d3.svg.axis().scale(x_scale).orient("bottom").tickPadding(2).tickFormat(d3.format("d"));
-                        var yAxis = d3.svg.axis().scale(y_scale).orient("left").tickPadding(2);
+        draw_impact_summary: function (url, placement, custom_options) {
+            custom_options = extend_options(options, custom_options);
+
+            var tip = d3.tip().attr('class', 'd3-tip').html(function (d) {
+                return '<p><strong>' + d.year + '</strong></p><p>' + d.title + '</p><p>' + d.citation_count + ' Citations</p>';
+            });
+
+            d3.json(url)
+                .header('Accept', options['content-type'])
+                .get(function (error, data) {
+                    var papers = data.papers;
+
+                    var svg = d3.select(placement).append("svg").
+                        attr('width', custom_options.width)
+                        .attr('height', custom_options.height)
+                        .append("g")
+                        .attr("transform", "translate(" +
+                        options.margins.left + "," +
+                        options.margins.top + ")")
 
 
-                        if (options.width < 300) {
-                            xAxis.ticks(5);
-                            yAxis.ticks(5);
-                        }
+                    var date_extent = [Number.MAX_VALUE, Number.MIN_VALUE];
+                    var citation_extent = [Number.MAX_VALUE, Number.MIN_VALUE];
 
-                        yAxis.tickFormat(d3.format("s"));
+                    for (var paper_idx in papers) {
+                        var paper = papers[paper_idx];
 
-                        svg.append("g")
-                            .attr("class", "x axis")
-                            .attr("transform", "translate(-" + options.margins.left + "," + (y_scale.range()[0] - 10) + ")")
-                            .call(xAxis);
+                        var collection = paper.citations.concat(paper.references);
 
-                        svg.append("g")
-                            .attr("class", "y axis")
-                            .attr("transform", "translate(" + (options.margins.left - 30) + "," + (options.margins.top - options.y_gutter) + ")")
-                            .call(yAxis);
+                        var citation_year_ext = d3.extent(collection, function (d) {
+                            return d.year;
+                        });
+
+                        if (citation_year_ext[0] < date_extent[0]) date_extent[0] = citation_year_ext[0];
+                        if (citation_year_ext[1] > date_extent[1]) date_extent[1] = citation_year_ext[1];
+
+                        var citation_count_ext = d3.extent(collection, function (d) {
+                            return d.citation_count;
+                        });
+                        if (citation_count_ext[0] < citation_extent[0]) citation_extent[0] = citation_count_ext[0];
+                        if (citation_count_ext[1] > citation_extent[1]) citation_extent[1] = citation_count_ext[1];
+
                     }
 
+                    for (var paper_idx in papers) {
+                        var paper = papers[paper_idx];
 
-                    var cite_graph_group = svg.append('g').attr('transform', 'translate(-' + options.margins.left + ',-' + options.margins.top + ')');
+                        var x_scale = d3.scale.linear()
+                            .domain(date_extent).range([custom_options.margins.left, custom_options.width - custom_options.margins.left - custom_options.margins.right]);
 
-                    cite_graph_group.selectAll("g.line").data(publications).enter().append("line")
-                        .style("stroke", function (d) {
-                            return options.colors(d.type);
-                        })
-                        .style("stroke-width", 1)
-                        .attr("x1", function (d) {
-                            return x_scale(d.year);
-                        })
-                        .attr("y1", function (d) {
+                        var y_scale = d3.scale.linear();
+                        if (custom_options.y_scale === 'log') {
+                            y_scale = d3.scale.log();
+                        }
 
-                            return d.citation_count == 0 ? y_scale(1) : y_scale(+d.citation_count);
-                        })
-                        .attr("x2", function (d) {
-                            return x_scale(data.year);
-                        }).attr("y2", function (d) {
-                            var focus_node_citations = data.citations.length;
-                            return focus_node_citations == 0 ? y_scale(1) : y_scale(focus_node_citations);
-                        })
-                        .style("opacity", .7);
+                        y_scale.domain([1, citation_extent[1]])
+                            .range([custom_options.height - custom_options.margins.bottom, custom_options.margins.top]);
 
-                    cite_graph_group.selectAll("g.node").data(publications).enter().append("circle").attr("r", function (d) {
-                        return d.type == "focus" ? Math.min((options.height * options.node_scaling), 5) : Math.min((options.height * options.node_scaling), 5);
-                    }).attr("class", function (d) {
-                        return d.type;
-                    }).attr("cx", function (d) {
-                        return x_scale(d.year);
-                    }).attr("cy", function (d) {
-                        return d.citation_count == 0 ? y_scale(1) : y_scale(+d.citation_count);
-                    }).style("fill", function (d) {
-                        return options.colors(d.type);
-                    }).style("opacity", function (d) {
-                        return d.type == "focus" ? 1 : .7;
-                    }).on('mouseover', tip.show)
-                        .on('mouseout', tip.hide)
-                        .on('click', function (d) {
+                        var processed_data = process_data(paper);
 
-                            window.open('http://www.inspirehep.net/record/' + d.id, '_blank');
-                        });
-                });
+                        custom_options.is_collection = true;
+                        render_impact_graph(svg, paper, processed_data, x_scale, y_scale, tip, custom_options);
+                    }
+
+                })
         }
     }
 })();

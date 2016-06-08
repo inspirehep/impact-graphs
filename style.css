@@ -4,6 +4,12 @@
     stroke-width: 1px;
 }
 
+text {
+    fill: black;
+    stroke: none;
+    font-size: .6em;
+}
+
 .node {
     cursor:pointer;
 }
