@@ -326,7 +326,7 @@ var ImpactGraph = (function () {
             });
 
             d3.json(url)
-                .header('Accept', options['content-type'])
+                .header('Accept', custom_options['content-type'])
                 .get(function (error, data) {
                     var processed_data = process_data(data);
                     var publications = processed_data['publications'];
