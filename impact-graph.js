@@ -37,7 +37,7 @@ var ImpactGraph = (function () {
             "id": focus_publication.inspire_id,
             "type": "focus",
             "title": focus_publication.title,
-            "citation_count": focus_publication.citations.length,
+            "citation_count": focus_publication.citation_count,
             "year": parseInt(focus_publication.year)
         });
 
@@ -229,7 +229,7 @@ var ImpactGraph = (function () {
                 d.x2 = x_scale(data.year);
                 return d.x2;
             }).attr("y2", function (d) {
-                var focus_node_citations = data.citations.length;
+                var focus_node_citations = data.citation_count;
                 d.y2 = focus_node_citations == 0 ? y_scale(1) : y_scale(focus_node_citations);
                 return d.y2;
             })
